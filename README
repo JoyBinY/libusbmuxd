@@ -7,6 +7,7 @@ to a socket provided by a usbmuxd daemon.
 Requirements
 ============
 
+----gcc-----
 Development Packages of:
 	libplist
 
@@ -22,10 +23,20 @@ Software:
 
 Optional:
 	inotify (Linux only)
+	
+[OR]
+
+----msvc----
+Development Packages of:
+	libplist[https://github.com/JoyBinY/libplist]
+
+Software:
+	Visual Studio 2010
 
 Installation
 ============
 
+----gcc-----
 To compile run:
 	./autogen.sh
 	make
@@ -36,7 +47,12 @@ make sure that pkg-config is installed and set the PKG_CONFIG_PATH environment
 variable if required. It can be passed directly like this:
 
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./autogen.sh
+	
+[OR]
 
+----msvc----
+To compile run:
+	libusbmuxd.vcxproj
 
 Who/What/Where?
 ===============
@@ -67,4 +83,4 @@ libimobiledevice is an independent software library and has not been
 authorized, sponsored, or otherwise approved by Apple Inc.
 
 README Updated on:
-	2017-05-21
+	2017-09-22

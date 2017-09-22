@@ -30,16 +30,6 @@
 #include <config.h>
 #endif
 
-#ifdef WIN32
-  #define USBMUXD_API __declspec( dllexport )
-#else
-  #ifdef HAVE_FVISIBILITY
-    #define USBMUXD_API __attribute__((visibility("default")))
-  #else
-    #define USBMUXD_API
-  #endif
-#endif
-
 #ifndef EPROTO
 #define EPROTO 134
 #endif
@@ -47,7 +37,16 @@
 #define EBADMSG 104
 #endif
 
+#ifdef _MSC_VER
+#define __func__ __FUNCTION__
+#define strcasecmp _stricmp
+#include <stdlib.h>
+#include <io.h>
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <signal.h>
 
 #ifdef WIN32
@@ -681,7 +680,7 @@ static int get_next_event(int sfd, usbmuxd_event_cb_t callback, void *user_data)
 	}
 
 	if (hdr.message == MESSAGE_DEVICE_ADD) {
-		struct usbmuxd_device_record *dev = payload;
+		struct usbmuxd_device_record *dev = (struct usbmuxd_device_record *)payload;
 		usbmuxd_device_info_t *devinfo = (usbmuxd_device_info_t*)malloc(sizeof(usbmuxd_device_info_t));
 		if (!devinfo) {
 			DEBUG(1, "%s: Out of memory!\n", __func__);
@@ -949,7 +948,7 @@ retry:
 	while (1) {
 		if (receive_packet(sfd, &hdr, &payload, 100) > 0) {
 			if (hdr.message == MESSAGE_DEVICE_ADD) {
-				dev = payload;
+				dev = (struct usbmuxd_device_record *)payload;
 
 				usbmuxd_device_info_t *devinfo = device_info_from_device_record(dev);
 				if (!devinfo) {
